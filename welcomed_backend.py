@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-    Flaskr
-    ~~~~~~
-    A microblog example application written as Flask tutorial with
-    Flask and sqlite3.
-    :copyright: (c) 2015 by Armin Ronacher.
-    :license: BSD, see LICENSE for more details.
+    welcomed_backend
+    Backend server and database for the Welcomed app
+    Requires key.py which contains GOOG_KEY, a string containing
+    a google maps API key.
+    For instructions on running this, see repo
+    https://github.com/Welcomed/welcomed_db
 """
 
 import os
