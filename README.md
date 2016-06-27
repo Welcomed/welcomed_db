@@ -10,9 +10,13 @@ To install:
 
 3. Create a python file called `key.py`, inside define a constant called `GOOG_KEY` that contains a Maps API key
 
-3. `export FLASK_APP=welcomed_backend`
+4. `export FLASK_APP=welcomed_backend`
 
-4. Run the server - `flask run`
+5.  Create database - `flask initdb`
+
+6. Load data - `flask loaddata`
+
+7. Run the server - `flask run`
 
 If you get an import error when running the server, do `export PYTHONPATH='.'`
 
