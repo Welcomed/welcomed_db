@@ -12,6 +12,7 @@ import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, Response, request, session, g, redirect, url_for, abort, \
      render_template, flash
+import urllib, json, time
 from flask.ext.cors import CORS, cross_origin
 from key import GOOG_KEY
 
@@ -77,18 +78,29 @@ def close_db(error):
         g.sqlite_db.close()
 
 def get_data(keyword, placetype, table):
-    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key="+GOOG_KEY+"&location=-37.825358,144.995339&radius=50000&type="+placetype+"&keyword="+keyword
-    response = urllib.urlopen(url)
-    data = json.loads(response.read())
-    for place in data['results']:
-        name = place['name']
-        lat = place['geometry']['location']['lat']
-        lng = place['geometry']['location']['lng']
-        address = place['vicinity']
-        db = get_db()
-        db.execute('insert into '+ table + ' (name, latitude, longitude, address) values (?, ?, ?, ?)',
-                   [name, lat, lng, address])
-        db.commit()
+    url1 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key="+GOOG_KEY+"&location=-37.825358,144.995339&radius=10000&type="+placetype+"&keyword="+keyword
+    url2 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key="+GOOG_KEY+"&pagetoken="
+
+    next_page_token = ""
+
+    for url in [url1, url2]:
+        if url == url2 and next_page_token:
+            url += next_page_token
+        time.sleep(10)
+        response = urllib.urlopen(url)
+        data = json.loads(response.read())
+        for place in data['results']:
+            name = place['name']
+            print name
+            lat = place['geometry']['location']['lat']
+            lng = place['geometry']['location']['lng']
+            address = place['vicinity']
+            db = get_db()
+            db.execute('insert into '+ table + ' (name, latitude, longitude, address) values (?, ?, ?, ?)',
+                       [name, lat, lng, address])
+            db.commit()
+        if 'next_page_token' in data:
+            next_page_token = data['next_page_token']
 
 @app.route('/data/<table>')
 @cross_origin()
