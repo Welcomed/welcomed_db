@@ -12,13 +12,15 @@ import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, Response, request, session, g, redirect, url_for, abort, \
      render_template, flash
-import urllib, json
+from flask.ext.cors import CORS, cross_origin
 from key import GOOG_KEY
 
 
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -89,6 +91,7 @@ def get_data(keyword, placetype, table):
         db.commit()
 
 @app.route('/data/<table>')
+@cross_origin()
 def show_entries(table):
     db = get_db()
     cur = db.execute('select name, latitude, longitude, address from '+table+' order by id desc')
