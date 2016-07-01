@@ -111,3 +111,7 @@ def show_entries(table):
     lst = [{'name':entry['name'], 'lat':entry['latitude'], 'lng':entry['longitude'], 'address':entry['address']} for entry in entries]
     resp = Response(response=json.dumps(lst), status=200, mimetype="application/json")
     return resp
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
